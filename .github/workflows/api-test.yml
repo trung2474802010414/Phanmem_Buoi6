@@ -29,7 +29,7 @@ jobs:
         run: |
           newman run ReqRes_Collection.json \
             -e ReqRes_Environment.json \
-            -d users.csv \
+            -d user.csv \
             --reporters cli,htmlextra \
             --reporter-htmlextra-export report.html
 
