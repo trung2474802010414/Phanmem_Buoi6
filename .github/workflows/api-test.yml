@@ -1,39 +1,32 @@
-name: API Testing CI/CD with Newman
+name: Automated API tests using Postman CLI
 
-on:
-  push:
-    branches: [ main ]
+on: push
 
 jobs:
-  test-api:
+  automated-api-tests:
     runs-on: ubuntu-latest
-
     steps:
-      # 1. Checkout mã nguồn từ repository về máy chủ ảo GitHub Actions
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # 2. Cài đặt môi trường Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      # 3. Cài đặt Newman CLI và Newman Reporter HTML Extra toàn cục
-      - name: Install Newman and HTML Extra Reporter
+      - name: Install Postman CLI
         run: |
-          npm install -g newman newman-reporter-htmlextra
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
 
-      # 4. Thực thi lệnh kiểm thử tự động hướng dữ liệu (Data-Driven Testing)
-      - name: Run Postman Collection via Newman
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+
+      - name: Install HTML Extra Reporter
         run: |
-          newman run "2474802010414_VoThanhTrung_ReqRes..postman_collection.json" \
-            -e "2474802010414_VoThanhTrung_ReqRes_ENV.postman_environment.json" \
+          npm install -g newman-reporter-htmlextra
+
+      - name: Run API tests via Postman CLI
+        run: |
+          postman collection run "58311370-1349c0cc-e711-4ead-b092-810e6ffbe3ca" \
+            -e "58311370-6bef1223-e1a4-4b75-beb6-8f963c5837e2" \
             -d users.csv \
             --reporters cli,htmlextra \
             --reporter-htmlextra-export report.html
 
-      # 5. Upload tệp báo cáo report.html thành Artifact của workflow
       - name: Upload HTML Test Report
         uses: actions/upload-artifact@v4
         with:
