@@ -23,6 +23,7 @@ jobs:
           newman run "2474802010414_VoThanhTrung_ReqRes.postman_collection.json" \
             -e "2474802010414_VoThanhTrung_ReqRes_ENV.postman_environment.json" \
             -d users.csv \
+            --delay-request 500 \
             --reporters cli,htmlextra \
             --reporter-htmlextra-export report.html
 
