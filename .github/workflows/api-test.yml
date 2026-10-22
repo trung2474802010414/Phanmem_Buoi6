@@ -27,8 +27,8 @@ jobs:
       # 4. Thực thi lệnh kiểm thử tự động hướng dữ liệu (Data-Driven Testing)
       - name: Run Postman Collection via Newman
         run: |
-          newman run ReqRes_Collection.json \
-            -e ReqRes_Environment.json \
+          newman run 2474802010414_VoThanhTrung_ReqRes..postman_collection.json \
+            -e 2474802010414_VoThanhTrung_ReqRes_ENV.postman_environment.json \
             -d user.csv \
             --reporters cli,htmlextra \
             --reporter-htmlextra-export report.html
