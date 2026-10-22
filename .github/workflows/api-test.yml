@@ -1,0 +1,41 @@
+name: API Testing CI/CD with Newman
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout mã nguồn từ repository về máy chủ ảo GitHub Actions
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Cài đặt môi trường Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # 3. Cài đặt Newman CLI và Newman Reporter HTML Extra toàn cục
+      - name: Install Newman and HTML Extra Reporter
+        run: |
+          npm install -g newman newman-reporter-htmlextra
+
+      # 4. Thực thi lệnh kiểm thử tự động hướng dữ liệu (Data-Driven Testing)
+      - name: Run Postman Collection via Newman
+        run: |
+          newman run ReqRes_Collection.json \
+            -e ReqRes_Environment.json \
+            -d users.csv \
+            --reporters cli,htmlextra \
+            --reporter-htmlextra-export report.html
+
+      # 5. Upload tệp báo cáo report.html thành Artifact của workflow
+      - name: Upload HTML Test Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: postman-html-report
+          path: report.html
